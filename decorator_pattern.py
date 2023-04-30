@@ -38,30 +38,30 @@ class LoggingDecorator(AbstractDecorator):
         return value
 
 
-#class BenchmarkDecorator(AbstractDecorator):
-#    def execute(self, upper_bound: int) -> int:
-#        start_time = perf_counter()
-#        value = self._decorated.execute(upper_bound)
-#        end_time = perf_counter()
-#        run_time = end_time - start_time
+class BenchmarkDecorator(AbstractDecorator):
+    def execute(self, upper_bound: int) -> int:
+        start_time = perf_counter()
+        value = self._decorated.execute(upper_bound)
+        end_time = perf_counter()
+        run_time = end_time - start_time
+
+        logging.info(
+            f"execution of {self._decorated.__class__.__name__} took {run_time: .4f} seconds"
+        )
+
+        return value
+
+#def benchmark(self, upper_bound: int) -> int:
+#    start_time = perf_counter()
+#    value = self._decorated.execute(upper_bound)
+#    end_time = perf_counter()
+#    run_time = end_time - start_time
 #
-#        logging.info(
-#            f"execution of {self._decorated.__class__.__name__} took {run_time: .4f} seconds"
-#        )
+#    logging.info(
+#        f"execution of {self._decorated.__class__.__name__} took {run_time: .4f} seconds"
+#    )
 #
-#        return value
-
-def benchmark(self, upper_bound: int) -> int:
-    start_time = perf_counter()
-    value = self._decorated.execute(upper_bound)
-    end_time = perf_counter()
-    run_time = end_time - start_time
-
-    logging.info(
-        f"execution of {self._decorated.__class__.__name__} took {run_time: .4f} seconds"
-    )
-
-    return value
+#    return value
 
 
 def main() -> None:
