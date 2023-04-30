@@ -27,12 +27,13 @@ class AbstractComponent(ABC):
 #                count += 1
 #        return count
 
-def count_prime_numbers(upper_bound: int) -> int:
-    count = 0
-    for number in range(upper_bound):
-        if is_prime(number):
-            count += 1
-    return count
+
+#def count_prime_numbers(upper_bound: int) -> int:
+#    count = 0
+#    for number in range(upper_bound):
+#        if is_prime(number):
+#            count += 1
+#    return count
 
 
 
@@ -87,8 +88,15 @@ def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
         print(f"execution of {func.__name__} took {run_time: .4f} seconds")
         return value
     return wrapper
+#but the same thing can be done using python decorator
 
-
+@benchmark
+def count_prime_numbers(upper_bound: int) -> int:
+    count = 0
+    for number in range(upper_bound):
+        if is_prime(number):
+            count += 1
+    return count
 
 
 def main() -> None:
@@ -98,8 +106,13 @@ def main() -> None:
     #benchmark_decorator = BenchmarkDecorator(component)
     #logging_decorator = LoggingDecorator(benchmark_decorator)
     #value = benchmark_decorator.execute(10000)
-    wrapper = benchmark(count_prime_numbers) #code cleaner than using only classes
-    value = wrapper(10000)
+
+    #after using wrapper inside generic benchmark
+    #wrapper = benchmark(count_prime_numbers) #code cleaner than using only classes
+    #value = wrapper(10000)
+    
+    #using only decorators
+    value = count_prime_numbers(10000)
     logging.info(f"Found {value} prime numbers")
 
 if __name__=="__main__":
