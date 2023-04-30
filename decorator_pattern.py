@@ -18,13 +18,22 @@ class AbstractComponent(ABC):
     def execute(self, upper_bound: int) -> int:
         pass
 
-class ConcreteComponent(AbstractComponent):
-    def execute(self, upper_bound: int) -> int:
-        count = 0
-        for number in range(upper_bound):
-            if is_prime(number):
-                count += 1
-        return count
+#class ConcreteComponent(AbstractComponent):
+#    def execute(self, upper_bound: int) -> int:
+#        count = 0
+#        for number in range(upper_bound):
+#            if is_prime(number):
+#                count += 1
+#        return count
+
+def count_prime_numbers(upper_bound: int) -> int:
+    count = 0
+    for number in range(upper_bound):
+        if is_prime(number):
+            count += 1
+    return count
+
+
 
 class AbstractDecorator(AbstractComponent):
     def __init__(self, decorated = AbstractComponent) -> None:
@@ -51,26 +60,27 @@ class BenchmarkDecorator(AbstractDecorator):
 
         return value
 
-#def benchmark(self, upper_bound: int) -> int:
-#    start_time = perf_counter()
-#    value = self._decorated.execute(upper_bound)
-#    end_time = perf_counter()
-#    run_time = end_time - start_time
-#
-#    logging.info(
-#        f"execution of {self._decorated.__class__.__name__} took {run_time: .4f} seconds"
-#    )
-#
-#    return value
+def benchmark(upper_bound: int) -> int: #but this is not easy to use with other function that i want to benchmark
+    start_time = perf_counter()
+    value = count_prime_numbers(upper_bound)
+    end_time = perf_counter()
+    run_time = end_time - start_time
+
+    logging.info(
+        f"execution of took {run_time: .4f} seconds"
+    )
+
+    return value
 
 
 def main() -> None:
 
     logging.basicConfig(level=logging.INFO)
-    component = ConcreteComponent()
-    benchmark_decorator = BenchmarkDecorator(component)
-    logging_decorator = LoggingDecorator(benchmark_decorator)
-    value = benchmark_decorator.execute(10000)
+    #component = ConcreteComponent()
+    #benchmark_decorator = BenchmarkDecorator(component)
+    #logging_decorator = LoggingDecorator(benchmark_decorator)
+    #value = benchmark_decorator.execute(10000)
+    value = benchmark(10000) #code cleaner than using only classes
     logging.info(f"Found {value} prime numbers")
 
 if __name__=="__main__":
