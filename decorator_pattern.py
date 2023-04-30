@@ -41,13 +41,6 @@ class AbstractDecorator(AbstractComponent):
     def __init__(self, decorated = AbstractComponent) -> None:
         self._decorated = decorated
 
-class LoggingDecorator(AbstractDecorator):
-    def execute(self, upper_bound: int) -> int:
-        logging.info(f"Calling {self._decorated.__class__.__name__}")
-        value = self._decorated.execute(upper_bound)
-        logging.info(f"Finished calling {self._decorated.__class__.__name__}")
-        return value
-
 
 class BenchmarkDecorator(AbstractDecorator):
     def execute(self, upper_bound: int) -> int:
@@ -90,6 +83,24 @@ def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
     return wrapper
 #but the same thing can be done using python decorator
 
+#now define a wrapper method for logging
+#class LoggingDecorator(AbstractDecorator):
+#    def execute(self, upper_bound: int) -> int:
+#        logging.info(f"Calling {self._decorated.__class__.__name__}")
+#        value = self._decorated.execute(upper_bound)
+#        logging.info(f"Finished calling {self._decorated.__class__.__name__}")
+#        return value
+def logger(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args, **kwargs):
+        logging.info(f"Calling {func.__name__}")
+        value = count_prime_numbers(*args, **kwargs)
+        logging.info(f"Finished calling {func.__name__}")
+        return value
+    return wrapper
+
+
+
+#@logger
 @benchmark
 def count_prime_numbers(upper_bound: int) -> int:
     count = 0
@@ -111,7 +122,11 @@ def main() -> None:
     #wrapper = benchmark(count_prime_numbers) #code cleaner than using only classes
     #value = wrapper(10000)
     
-    #using only decorators
+    #using only benchmark decorators
+    #value = count_prime_numbers(10000)
+    #logging.info(f"Found {value} prime numbers")
+
+    #using both benchmark and logging decorators
     value = count_prime_numbers(10000)
     logging.info(f"Found {value} prime numbers")
 
