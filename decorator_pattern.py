@@ -2,6 +2,7 @@ import logging
 from abc import ABC, abstractmethod
 from math import sqrt
 from time import perf_counter
+from typing import Callable, Any
 
 def is_prime(number: int) -> bool:
     if number < 2: 
@@ -60,17 +61,34 @@ class BenchmarkDecorator(AbstractDecorator):
 
         return value
 
-def benchmark(upper_bound: int) -> int: #but this is not easy to use with other function that i want to benchmark
-    start_time = perf_counter()
-    value = count_prime_numbers(upper_bound)
-    end_time = perf_counter()
-    run_time = end_time - start_time
 
-    logging.info(
-        f"execution of took {run_time: .4f} seconds"
-    )
+#but this is not easy to use with other function that i want to benchmark
 
-    return value
+#def benchmark(upper_bound: int) -> int: 
+#    start_time = perf_counter()
+#    value = count_prime_numbers(upper_bound)
+#    end_time = perf_counter()
+#    run_time = end_time - start_time
+#
+#    logging.info(
+#        f"execution of took {run_time: .4f} seconds"
+#    )
+#
+#    return value
+
+#we need a more generic function that will take a function and arbitrary arguments and will pass the arbitrary arguments to the function
+def benchmark(func: Callable[..., Any]) -> Callable[..., Any]:
+    def wrapper(*args, **kwargs):
+        start_time = perf_counter()
+        value = func(*args, **kwargs)
+        end_time = perf_counter()
+        run_time = end_time - start_time
+
+        print(f"execution of {func.__name__} took {run_time: .4f} seconds")
+        return value
+    return wrapper
+
+
 
 
 def main() -> None:
@@ -80,7 +98,8 @@ def main() -> None:
     #benchmark_decorator = BenchmarkDecorator(component)
     #logging_decorator = LoggingDecorator(benchmark_decorator)
     #value = benchmark_decorator.execute(10000)
-    value = benchmark(10000) #code cleaner than using only classes
+    wrapper = benchmark(count_prime_numbers) #code cleaner than using only classes
+    value = wrapper(10000)
     logging.info(f"Found {value} prime numbers")
 
 if __name__=="__main__":
